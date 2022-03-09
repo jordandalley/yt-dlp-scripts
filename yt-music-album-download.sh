@@ -10,7 +10,7 @@ yt-dlp  --ignore-errors \
         --extract-audio \
         --audio-format mp3 \
         --audio-quality 0 \
-        --parse-metadata "release_date:%(upload_date)s" \
+        --parse-metadata "%(release_year)s0101:%(upload_date)s" \
         --parse-metadata "playlist_index:%(track_number)s" \
         --parse-metadata ":(?P<webpage_url>)" \
         --parse-metadata ":(?P<synopsis>)" \
