@@ -1,6 +1,8 @@
 #!/bin/bash
 
-### Script for downloading albums from Youtube Music
+### Script for downloading albums from Youtube Music ##########
+### Usage: ./yt-music-album-download.sh <youtube music url> ###
+
 # - Converts to MP3 from the best quality audio feed
 # - Adds track number, album, artist, title, and release year into id3 tags
 # - Adds album art embedded thumbnails
@@ -16,17 +18,17 @@ jq_release_year_1=`echo $jsondata | jq -r '.release_year'`
 jq_release_date=`echo $jsondata | jq -r '.release_date'`
 if [ $jq_release_date != 'null' ]; then
         jq_release_year_2=${jq_release_date::-4};
-        year=$(( jq_release_year_1 < jq_release_year_2 ? jq_release_year_1 : jq_release_year_2 ));
+        year=$((jq_release_year_1<jq_release_year_2?jq_release_year_1:jq_release_year_2));
 else
         year=$jq_release_year_1;
 fi
 
-# Grabbing the artist then removing any superfluous information after the first comma
+# Grabbing the artist then removing any superfluous information after the first comma. Some artists put every band memember into the artist field.
 jq_artist=`echo $jsondata | jq -r '.artist'`
 artist=${jq_artist%%,*}
 
 echo "Album information retrieved..."
-# Pass to yt-dlp
+# Pass to yt-dlp and begin download all the music!
 yt-dlp  --ignore-errors \
         --format "(bestaudio[acodec^=opus]/bestaudio)/best" \
         --extract-audio \
