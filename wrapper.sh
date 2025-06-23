@@ -56,7 +56,7 @@ if [[ "$PROXY" ]]; then
 fi
 
 # Construct the command
-CMD="yt-dlp -q $YTDLP_PROXY -f \"$YTDLP_FORMAT_SELECT\" -S \"$YTDLP_FORMAT_SORT\" --user-agent \"$USER_AGENT\" --hls-use-mpegts --downloader ffmpeg --downloader-args \"ffmpeg_i:$FFMPEG_IN_ARGS\" --downloader-args \"ffmpeg_o:$FFMPEG_OUT_ARGS\" -o - \"$INPUT_URL\""
+CMD="\"$YTDLP_LOCATION\" -q $YTDLP_PROXY -f \"$YTDLP_FORMAT_SELECT\" -S \"$YTDLP_FORMAT_SORT\" --user-agent \"$USER_AGENT\" --hls-use-mpegts --downloader \"ffmpeg\" --ffmpeg-location \"$FFMPEG_LOCATION\" --downloader-args \"ffmpeg_i:$FFMPEG_IN_ARGS\" --downloader-args \"ffmpeg_o:$FFMPEG_OUT_ARGS\" -o - \"$INPUT_URL\""
 
 # Spawn the command as a background process and capture the PID
 bash -c "$CMD" &
