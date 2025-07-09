@@ -1,13 +1,19 @@
 #!/bin/bash
 
-# Configuration variables for yt-dlp
+# Binary paths
+FFMPEG_LOCATION="/usr/local/bin/ffmpeg"
 YTDLP_LOCATION="/dispatcharrpy/bin/yt-dlp"
+STRMLNK_LOCATION="/dispatcharrpy/bin/streamlink"
+
+# Configuration variables for streamlink (used to parse MPD manifests before passing to ffmpeg)
+STRMLNK_FORMAT_SELECT="best"
+STRMLNK_ARGS="--ffmpeg-fout mpegts --ffmpeg-copyts --ffmpeg-verbose"
+
+# Configuration variables for yt-dlp (used to parse everything else before passing to ffmpeg)
 YTDLP_FORMAT_SELECT="bv+ba/b"
 YTDLP_FORMAT_SORT="br"
-# Configuration variables for ffmpeg
-FFMPEG_LOCATION="/usr/local/bin/ffmpeg"
-FFMPEG_IN_ARGS="-allowed_extensions ALL -re -readrate_initial_burst 30 -copyts"
-FFMPEG_OUT_ARGS="-dn -mpegts_copyts 1"
+YTDLP_FF_IN_ARGS="-allowed_extensions ALL -re -readrate_initial_burst 30 -copyts"
+YTDLP_FF_OUT_ARGS="-dn -mpegts_copyts 1"
 
 # Function to show usage
 usage() {
@@ -51,12 +57,20 @@ fi
 
 # Check $PROXY amd create additional vars for using http proxy
 if [[ "$PROXY" ]]; then
-  FFMPEG_IN_ARGS="$FFMPEG_IN_ARGS -http_proxy $PROXY"
+  # yt-dlp will pass the the user agent string, but not the proxy. Add to $YTDLP_FF_IN_ARGS
   YTDLP_PROXY="--proxy \"$PROXY\""
+  STRMLNK_ARGS="--http-proxy \"$PROXY\" $STRMLNK_ARGS"
+  YTDLP_FF_IN_ARGS="$YTDLP_FF_IN_ARGS -http_proxy $PROXY"
 fi
 
-# Construct the command
-CMD="\"$YTDLP_LOCATION\" -q $YTDLP_PROXY -f \"$YTDLP_FORMAT_SELECT\" -S \"$YTDLP_FORMAT_SORT\" --user-agent \"$USER_AGENT\" --hls-use-mpegts --downloader \"ffmpeg\" --ffmpeg-location \"$FFMPEG_LOCATION\" --downloader-args \"ffmpeg_i:$FFMPEG_IN_ARGS\" --downloader-args \"ffmpeg_o:$FFMPEG_OUT_ARGS\" -o - \"$INPUT_URL\""
+# Check the url path for matching mpd file, and if so send it to streamlink instead
+if [[ "${INPUT_URL,,}" =~ ^[^?]*\.mpd([/?]|$) ]]; then
+  # Stream is an DASH MPD manifest - pass to streamlink
+  CMD="\"$STRMLNK_LOCATION\" --ffmpeg-ffmpeg \"$FFMPEG_LOCATION\" --http-header User-Agent=\"$USER_AGENT\" $STRMLNK_ARGS --stdout \"$INPUT_URL\" $STRMLNK_FORMAT_SELECT"
+else
+  # Stream is NOT a DASH MPD manifest, so pass to yt-dlp
+  CMD="\"$YTDLP_LOCATION\" $YTDLP_PROXY -f \"$YTDLP_FORMAT_SELECT\" -S \"$YTDLP_FORMAT_SORT\" --user-agent \"$USER_AGENT\" --hls-use-mpegts --downloader \"ffmpeg\" --ffmpeg-location \"$FFMPEG_LOCATION\" --downloader-args \"ffmpeg_i:$YTDLP_FF_IN_ARGS\" --downloader-args \"ffmpeg_o:$YTDLP_FF_OUT_ARGS\" -o - \"$INPUT_URL\""
+fi
 
 # Spawn the command as a background process and capture the PID
 bash -c "$CMD" &
