@@ -5,6 +5,7 @@ This is just a repo for some random scripts for downloading things using yt-dlp 
 # wrapper.sh
 
 Usage: ```./wrapper.sh -i <input_url> -ua <user_agent> [-proxy <proxy_url>]```
+
 Eg. ```./wrapper.sh -i "https://url.to.strean/some-tv-channel.m3u8" -ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.3" -proxy "http://some.proxy.server:3128"```
 
 A wrapper script for use in [Dispatcharr](https://github.com/Dispatcharr/Dispatcharr/) that does the following:
