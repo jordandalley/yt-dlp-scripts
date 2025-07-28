@@ -4,6 +4,8 @@ This is just a repo for some random scripts for downloading things using yt-dlp 
 
 # wrapper.sh
 
+I have largely abandoned this wrapper in favour of a much more powerful wrapper script available here: [Dispatchwrapparr](https://github.com/jordandalley/dispatchwrapparr) 
+
 A wrapper script for use in [Dispatcharr](https://github.com/Dispatcharr/Dispatcharr/) that does the following:
 - Selects the highest quality streams before passing to ffmpeg which significantly speeds up stream starts
   - Uses 'streamlink' for MPEG-DASH parsing
