@@ -25,7 +25,13 @@ fi
 
 # Grabbing the artist then removing any superfluous information after the first comma. Some artists put every band memember into the artist field.
 jq_artist=`echo $jsondata | jq -r '.artist'`
+jq_uploader=`echo $jsondata | jq -r '.uploader'`
 artist=${jq_artist%%,*}
+if [[ $artist == "null" ]]
+then
+    artist=$jq_uploader
+fi
+
 
 echo "Album information retrieved..."
 # Pass to yt-dlp and begin download all the music!
