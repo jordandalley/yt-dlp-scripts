@@ -6,7 +6,7 @@
 # - Converts to M4A AAC from the best quality audio feed
 # - Adds track number, album, artist, title, and release year into metadata
 # - Adds album art embedded thumbnails
-# - Saves to DOWNLOAD_PATH as '{Artist}/{Album}/{Track} - {Song}.mp3'
+# - Saves to DOWNLOAD_PATH as '{Artist}/{Album}/{Track} - {Song}.m4a'
 # - Place yt-dlp, ffmpeg and deno binaries into ./bin
 # - Extract cookies from youtube.com and place in the base directory as cookies.txt
 
