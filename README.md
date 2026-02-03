@@ -2,7 +2,7 @@
 
 This is just a repo for some random scripts for downloading things using yt-dlp
 
-# yt-music-album-download.sh
+# yt-music-dl.sh
 
 - Downloads entire albums off Youtube Music using yt-dlp: https://github.com/yt-dlp/yt-dlp
 - Converts tracks to M4A AAC from the best quality audio format
